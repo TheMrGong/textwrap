@@ -28,6 +28,7 @@ all-features = true
 
 [features]
 default = ["unicode-linebreak", "unicode-width", "smawk"]
+all-chars-same-width = []
 
 [dependencies]
 hyphenation = { version = "0.8.4", optional = true, features = ["embed_en-us"] }

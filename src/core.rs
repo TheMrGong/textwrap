@@ -59,7 +59,13 @@ pub(crate) fn skip_ansi_escape_sequence<I: Iterator<Item = char>>(ch: char, char
     false
 }
 
-#[cfg(feature = "unicode-width")]
+#[cfg(feature = "all-chars-same-width")]
+#[inline]
+fn ch_width(_: char) -> usize {
+    1
+}
+
+#[cfg(all(feature = "unicode-width", not(feature = "all-chars-same-width")))]
 #[inline]
 fn ch_width(ch: char) -> usize {
     unicode_width::UnicodeWidthChar::width(ch).unwrap_or(0)
@@ -67,10 +73,10 @@ fn ch_width(ch: char) -> usize {
 
 /// First character which [`ch_width`] will classify as double-width.
 /// Please see [`display_width`].
-#[cfg(not(feature = "unicode-width"))]
+#[cfg(all(not(feature = "unicode-width"), not(feature = "all-chars-same-width")))]
 const DOUBLE_WIDTH_CUTOFF: char = '\u{1100}';
 
-#[cfg(not(feature = "unicode-width"))]
+#[cfg(all(not(feature = "unicode-width"), not(feature = "all-chars-same-width")))]
 #[inline]
 fn ch_width(ch: char) -> usize {
     if ch < DOUBLE_WIDTH_CUTOFF {
